@@ -14,6 +14,8 @@ int main()
     }
     struct timeval end_time;
     gettimeofday(&end_time, NULL);
+    // tv_usec is the seconds between linux's epoch and current time
+    // tv_sec is the microseconds between linux's epoch and current time
     long unsigned elapsed =
         (end_time.tv_sec * 1000000 + end_time.tv_usec) -
         (start_time.tv_sec * 1000000 + start_time.tv_usec);
