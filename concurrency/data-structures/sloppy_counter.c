@@ -37,6 +37,7 @@ void update(Counter *counter, int amt, int thread_id)
         pthread_mutex_lock(&counter->global_mutex);
         counter->global_counter += counter->local_counters[thread_id];
         pthread_mutex_unlock(&counter->global_mutex);
+        counter->local_counters[thread_id] = 0;
     }
     pthread_mutex_unlock(&counter->local_mutexes[thread_id]);
 }
@@ -47,4 +48,19 @@ int get(Counter *counter)
     result = counter->global_counter;
     pthread_mutex_unlock(&counter->global_mutex);
     return result; // approximation
+}
+
+int main()
+{
+
+    Counter counter;
+    init_counter(&counter, 5);
+    update(&counter, 5, 0);
+    update(&counter, 6, 0);
+    update(&counter, 5, 1);
+    update(&counter, 5, 2);
+    update(&counter, 5, 3);
+    update(&counter, 5, 4);
+    printf("Result:%d", get(&counter));
+    return 0;
 }

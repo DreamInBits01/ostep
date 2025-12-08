@@ -1,5 +1,4 @@
 #include <stdio.h>
-// An application of Solaris lock, yeilding the CPU
 /*
 Locks are evaluated at 3 axes
 1-Does it provide mutual exclusion?

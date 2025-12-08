@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #define _GNU_SOURCE
 #include <unistd.h>
+// An application of Solaris lock, yeilding the CPU
 
 /*
 the guard is used, basically as a spin-lock around
