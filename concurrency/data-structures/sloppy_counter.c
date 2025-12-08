@@ -19,7 +19,7 @@ typedef struct Counter
 void init_counter(Counter *counter, int threshhold)
 {
     counter->global_counter = 0;
-    counter->global_counter = threshhold;
+    counter->threshhold = threshhold;
     pthread_mutex_init(&counter->global_mutex, NULL);
     for (size_t i = 0; i < NUM_CORES; i++)
     {
@@ -57,6 +57,7 @@ int main()
     init_counter(&counter, 5);
     update(&counter, 5, 0);
     update(&counter, 6, 0);
+    update(&counter, 5, 1);
     update(&counter, 5, 1);
     update(&counter, 5, 2);
     update(&counter, 5, 3);
