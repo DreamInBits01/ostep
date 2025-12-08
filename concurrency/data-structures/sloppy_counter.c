@@ -9,11 +9,11 @@
 */
 typedef struct Counter
 {
-    int global_counter;
+    unsigned global_counter;
     pthread_mutex_t global_mutex;
-    int local_counters[NUM_CORES];
+    unsigned local_counters[NUM_CORES];
     pthread_mutex_t local_mutexes[NUM_CORES];
-    int threshhold;
+    unsigned threshhold;
 } Counter;
 
 void init_counter(Counter *counter, int threshhold)
@@ -41,10 +41,10 @@ void update(Counter *counter, int amt, int thread_id)
     }
     pthread_mutex_unlock(&counter->local_mutexes[thread_id]);
 }
-int get(Counter *counter)
+unsigned get(Counter *counter)
 {
     pthread_mutex_lock(&counter->global_mutex);
-    int result;
+    unsigned result;
     result = counter->global_counter;
     pthread_mutex_unlock(&counter->global_mutex);
     return result; // approximation
@@ -55,13 +55,17 @@ int main()
 
     Counter counter;
     init_counter(&counter, 5);
-    update(&counter, 5, 0);
-    update(&counter, 6, 0);
-    update(&counter, 5, 1);
-    update(&counter, 5, 1);
-    update(&counter, 5, 2);
-    update(&counter, 5, 3);
-    update(&counter, 5, 4);
-    printf("Result:%d", get(&counter));
+    for (size_t i = 0; i < 100; i++)
+    {
+        update(&counter, 1, 0);
+        update(&counter, 2, 0);
+        update(&counter, 3, 1);
+        update(&counter, 4, 1);
+        update(&counter, 5, 2);
+        update(&counter, 6, 3);
+        update(&counter, 7, 4);
+    }
+
+    printf("Result:%u", get(&counter));
     return 0;
 }
