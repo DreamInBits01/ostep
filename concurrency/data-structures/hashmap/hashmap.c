@@ -72,6 +72,18 @@ void print_list(list_t *list)
     }
     pthread_mutex_unlock(&list->mutex);
 }
+void list_destroy(list_t *list)
+{
+    // Free all nodes
+    node_t *current = list->head;
+    while (current)
+    {
+        node_t *temp = current;
+        current = current->next;
+        free(temp);
+    }
+    pthread_mutex_destroy(&list->mutex); // Destroy mutex
+}
 
 // Hashmap
 void hashmap_init(Hashmap *hashmap)
@@ -91,6 +103,13 @@ int hash_lockup(Hashmap *hashmap, int key)
     int bucket = key % BUCKETS;
     return list_lookup(&hashmap->buckets[bucket], key);
 }
+void hashmap_destroy(Hashmap *hashmap)
+{
+    for (size_t i = 0; i < BUCKETS; i++)
+    {
+        list_destroy(&hashmap->buckets[i]);
+    }
+}
 int main()
 {
     Hashmap hashmap;
@@ -99,5 +118,6 @@ int main()
     hash_insert(&hashmap, 3);
     hash_insert(&hashmap, 4);
     printf("%d", hash_lockup(&hashmap, 3));
+    hashmap_destroy(&hashmap);
     // print_list(&list);
 }
