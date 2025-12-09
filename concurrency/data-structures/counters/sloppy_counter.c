@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <sys/time.h>
 #define NUM_CORES 5
 /*
     The idea of this counter is to trade accuracy for performance gains.
@@ -27,7 +28,12 @@ void init_counter(Counter *counter, int threshhold)
         pthread_mutex_init(&counter->local_mutexes[i], NULL);
     }
 };
-
+/*
+Grab a local counter
+1-Increase the local counter
+2-If it's equal or more to the threshhold, update global counter, and reset the local counter
+3-release the lock
+*/
 void update(Counter *counter, int amt, int thread_id)
 {
     pthread_mutex_lock(&counter->local_mutexes[thread_id]);
@@ -52,20 +58,24 @@ unsigned get(Counter *counter)
 
 int main()
 {
-
+    struct timeval start_time;
+    struct timeval end_time;
+    gettimeofday(&start_time, NULL);
     Counter counter;
     init_counter(&counter, 5);
     for (size_t i = 0; i < 100; i++)
     {
         update(&counter, 1, 0);
-        update(&counter, 2, 0);
-        update(&counter, 3, 1);
-        update(&counter, 4, 1);
-        update(&counter, 5, 2);
-        update(&counter, 6, 3);
-        update(&counter, 7, 4);
+        update(&counter, 1, 0);
+        update(&counter, 1, 1);
+        update(&counter, 1, 1);
+        update(&counter, 1, 2);
+        update(&counter, 1, 3);
+        update(&counter, 1, 4);
     }
-
-    printf("Result:%u", get(&counter));
+    gettimeofday(&end_time, NULL);
+    printf("Result:%u\n", get(&counter));
+    long unsigned elapsed = (end_time.tv_sec * 1000000 + end_time.tv_usec) - (start_time.tv_sec * 1000000 + start_time.tv_usec);
+    printf("Took MS:%ld", elapsed);
     return 0;
 }
