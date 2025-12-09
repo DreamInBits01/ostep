@@ -6,7 +6,9 @@
 /*
     The idea of this counter is to trade accuracy for performance gains.
     The counter consists of a global counter, a global lock, local counters, local locks, and finally a threshold variable that decides the update frequency of the global counter.
-    The local counters are incremented, until they reach that threshold, then the global counter is incremented
+    The local counters are incremented, until they reach that threshold, then the global counter is incremented.
+    This way, the global lock is used only when the threshold is reached.
+    There's an inverse relationship between performance and threshold size
 */
 typedef struct Counter
 {
@@ -60,14 +62,12 @@ int main()
 {
     struct timeval start_time;
     struct timeval end_time;
-    gettimeofday(&start_time, NULL);
     Counter counter;
+    gettimeofday(&start_time, NULL);
     init_counter(&counter, 5);
-    for (size_t i = 0; i < 100; i++)
+    for (size_t i = 0; i < 100000; i++)
     {
         update(&counter, 1, 0);
-        update(&counter, 1, 0);
-        update(&counter, 1, 1);
         update(&counter, 1, 1);
         update(&counter, 1, 2);
         update(&counter, 1, 3);
@@ -76,6 +76,22 @@ int main()
     gettimeofday(&end_time, NULL);
     printf("Result:%u\n", get(&counter));
     long unsigned elapsed = (end_time.tv_sec * 1000000 + end_time.tv_usec) - (start_time.tv_sec * 1000000 + start_time.tv_usec);
-    printf("Took MS:%ld", elapsed);
+    printf("Took MS:%.1f", (float)elapsed);
     return 0;
-}
+};
+// int main()
+// {
+//     struct timeval start_time;
+//     struct timeval end_time;
+//     int counter = 0;
+//     gettimeofday(&start_time, NULL);
+//     for (size_t i = 0; i < 100000; i++)
+//     {
+//         counter += 1;
+//     }
+//     gettimeofday(&end_time, NULL);
+//     printf("Result:%u\n", counter);
+//     long unsigned elapsed = (end_time.tv_sec * 1000000 + end_time.tv_usec) - (start_time.tv_sec * 1000000 + start_time.tv_usec);
+//     printf("Took MS:%.1f", (float)elapsed);
+//     return 0;
+// }
