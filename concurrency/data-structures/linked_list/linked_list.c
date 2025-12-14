@@ -75,9 +75,12 @@ void list_destroy(list_t *list)
     node_t *current = list->head;
     while (current)
     {
-        node_t *temp = current;
-        current = current->next;
-        free(temp);
+        node_t *temp = current->next;
+        free(current);
+        current = temp;
+        // node_t *temp = current;
+        // current = current->next;
+        // free(temp);
     }
     pthread_mutex_destroy(&list->mutex); // Destroy mutex
 }
@@ -89,7 +92,7 @@ int main()
     list_insert(&list, 1);
     list_insert(&list, 3);
     list_insert(&list, 2);
+    print_list(&list);
     list_destroy(&list);
-    // printf("%d", list_lookup(&list, 4));
-    // print_list(&list);
+    print_list(&list);
 }

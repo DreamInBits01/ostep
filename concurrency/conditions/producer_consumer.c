@@ -2,6 +2,18 @@
 #include <pthread.h>
 #include <stdlib.h>
 #define BUFFER_SIZE 10
+
+/*
+Without two conditions,
+we might have the data full and signal that we want to consume it.
+Depending on the condition queue, we might awaken a producer instead of a consumer.
+
+On the other side,
+if we have consumed all data, we need to awake a producer thread,
+again depending on the queue of the condition,
+we might awaken the other consumer thread instead of a producer thread.
+
+*/
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t not_full = PTHREAD_COND_INITIALIZER;
 pthread_cond_t not_empty = PTHREAD_COND_INITIALIZER;

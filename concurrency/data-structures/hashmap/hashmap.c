@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <pthread.h>
 #define BUCKETS 51
+
+/*
+The performance gains here are great beacuse each bucket has its own lock, so when a bucket
+is updated, only its lock is used
+*/
 typedef struct node_t
 {
     int data;
