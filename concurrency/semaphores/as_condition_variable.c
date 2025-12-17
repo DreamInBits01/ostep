@@ -7,9 +7,9 @@ Semaphores are atomic counters that can be used to achieve mutual exclusion.
 If the counter reached a minus value, the code after it won't execute
 
 
-Tracing
+Tracing (child runs first)
 -initial counter value is 0
--Child 1 runs
+-Child runs
     -It runs
 
 -Parent runs (while child is running)
@@ -23,6 +23,20 @@ Tracing
 -Parent runs (child has completed)
     -Decreases the counter, it becomes 0
     -The thread continue running
+
+
+Tracing (Parent runs first)
+-initial counter value is 0
+-Parent
+    -Decrements the counter
+    -It becomes zero so the parent waits
+-Child runs
+    -Child runs
+    -Finishes, and increments the counter, it becomes 0
+    -Exists
+
+-Parent runs
+
 */
 void *child(void *args)
 {
@@ -39,15 +53,3 @@ int main()
     sem_wait(&condition);
     printf("Parent ended...\n");
 };
-/*
-
-
-
-
-
-
-
-
-
-
-*/
