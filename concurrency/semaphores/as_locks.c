@@ -3,7 +3,7 @@
 #include <pthread.h>
 sem_t mutex;
 /*
-Semaphores are atomic counter that can be used to achieve mutual exclusion.
+Semaphores are atomic counters that can be used to achieve mutual exclusion.
 If the counter reached a minus value, the code after it won't execute
 
 

@@ -3,10 +3,8 @@
 volatile int is_child_done = 0;
 pthread_mutex_t mutex;
 pthread_cond_t child_done;
-void *child(void *args)
+void child_exit()
 {
-    printf("Child started...\n");
-    printf("Child ended...\n");
     pthread_mutex_lock(&mutex);
     is_child_done = 1;
     pthread_cond_signal(&child_done);
@@ -19,6 +17,13 @@ void child_join()
         pthread_cond_wait(&child_done, &mutex);
     pthread_mutex_unlock(&mutex);
 }
+void *child(void *args)
+{
+    printf("Child started...\n");
+    printf("Child ended...\n");
+    child_exit();
+}
+
 int main()
 {
     pthread_t child_id;
