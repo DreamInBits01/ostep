@@ -43,7 +43,7 @@ void rw_read_aquire_read_lock(rw_lock_t *rw_lock)
 {
     sem_wait(&rw_lock->mutex);
     rw_lock->readers++;
-    if (rw_lock->readers == 1) // First reader aquires lock
+    if (rw_lock->readers == 1) // First reader aquires write mutex
     {
         rw_lock_aquire_write_mutex(&rw_lock->write_mutex);
     }
@@ -53,9 +53,9 @@ void rw_read_relase_read_lock(rw_lock_t *rw_lock)
 {
     sem_wait(&rw_lock->mutex);
     rw_lock->readers--;
-    if (rw_lock->readers == 0) // Last reader releases lock
+    if (rw_lock->readers == 0) // Last reader releases write mutex
     {
-        rw_lock_aquire_relase_mutex(&rw_lock->write_mutex);
+        rw_lock_relase_write_mutex(&rw_lock->write_mutex);
     }
     sem_post(&rw_lock->mutex);
 }
