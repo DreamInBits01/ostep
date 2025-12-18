@@ -4,7 +4,7 @@
 sem_t condition;
 /*
 Semaphores are atomic counters that can be used to achieve mutual exclusion.
-If the counter reached a minus value, the code after it won't execute
+If the counter reached 0, the code after it won't execute
 
 
 Tracing (child runs first)

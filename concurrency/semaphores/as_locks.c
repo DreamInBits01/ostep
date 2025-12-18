@@ -4,7 +4,7 @@
 sem_t mutex;
 /*
 Semaphores are atomic counters that can be used to achieve mutual exclusion.
-If the counter reached a minus value, the code after it won't execute
+If the counter reached 0, the code after it won't execute
 
 
 Tracing
@@ -14,8 +14,7 @@ Tracing
     -completes the critical section
 
 -Thread 2 runs (while thread 1 is running)
-    -Decrease the counter, it becomes -1 so the thread waits
-    -It waits
+    -The counter is zero, decreasing it results in a minus value so thread 2 will wait until thread 1 is done
 
 -Thread 1
     -Increments the counter it became 1 now
@@ -51,15 +50,3 @@ int main()
     pthread_join(thread_2, NULL);
     printf("Counter:%d", counter);
 };
-/*
-
-
-
-
-
-
-
-
-
-
-*/
