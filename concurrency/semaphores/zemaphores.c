@@ -38,7 +38,7 @@ void zemaphore_init(zemaphore_t *zemaphore)
     pthread_cond_init(&zemaphore->cond, NULL);
     pthread_mutex_init(&zemaphore->mutex, NULL);
 }
-void zemaphore_iwait(zemaphore_t *zemaphore)
+void zemaphore_wait(zemaphore_t *zemaphore)
 {
     pthread_mutex_lock(&zemaphore->mutex);
     // reached zero or less, the code following code that's written after this must wait until the value is greater than 0
