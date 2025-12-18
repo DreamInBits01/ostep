@@ -1,7 +1,23 @@
 #include <stdio.h>
 #include <semaphore.h>
 #include <pthread.h>
+/*
+The need for such look rises from the fact that many readers will not tamper with the Integrity of the data.
+However, one writer is allowed at a time to access the critical section and modify the data.
 
+So the first reader need to aquire the writing lock to prevent any future writing attempts.
+The last reader needs to relase the writing lock to allow any future writing attempts
+
+To build such lock, the following parts are needed
+-Write mutex (used for writing operations)
+-Number of readers to know when to relase the write mutex and when to aquire it
+-A mutex used when the number of readers is accessed or modified
+
+*NOTE
+Readers might monopolize the lock and never give a chance for writers to take the writing lock.
+More sophisticated solutions exists, but on the cost of simplicity.
+
+*/
 typedef struct rw_lock
 {
     sem_t mutex;
